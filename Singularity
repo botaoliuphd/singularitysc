@@ -161,3 +161,15 @@ From: ubuntu:16.04
     pip3 install awscli
     pip3 install cython pysam numpy
     pip3 install git+https://bitbucket.org/biociphers/majiq_stable.git#egg=majiq
+
+    #################
+    ## apache2 ##
+    #################
+    apt update
+    apt install apache2
+    cd /tmp
+    git clone https://github.com/botaoliuphd/singularitysc.git
+    cd /tmp/singularitysc/conf
+    mv apache2.conf /etc/apache2
+    mv 000-default.conf /etc/apache2/sites-available/
+    service apache2 restart
