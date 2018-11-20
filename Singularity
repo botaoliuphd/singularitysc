@@ -8,7 +8,7 @@ From: ubuntu:16.04
     Botao Liu added splicing packages
 
 %environment
-    PATH=$PATH:/bin:/sbin:/usr/local/bin/dolphin-bin:/usr/bin/bcl2fastq2-v2.17.1.14/bin:/usr/local/bin/dolphin-bin/tophat-2.0.14.Linux_x86_64:/usr/local/bin/julia/bin
+    PATH=$PATH:/bin:/sbin:/usr/local/bin/dolphin-bin:/usr/bin/bcl2fastq2-v2.17.1.14/bin:/usr/local/bin/dolphin-bin/tophat-2.0.14.Linux_x86_64:/usr/local/bin/julia/bin:/usr/local/bin/sratoolkit/bin
     export PATH
 
 %post
@@ -161,3 +161,12 @@ From: ubuntu:16.04
     pip3 install awscli
     pip3 install cython pysam numpy
     pip3 install git+https://bitbucket.org/biociphers/majiq_stable.git#egg=majiq
+
+    #################
+    ## sratoolkit ###
+    #################
+    cd /tmp
+    wget "https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.2/sratoolkit.2.9.2-ubuntu64.tar.gz"
+    tar -xvzf sratoolkit.2.9.2-ubuntu64.tar.gz
+    mkdir /usr/local/bin/sratoolkit
+    mv sratoolkit.2.9.2-ubuntu64/* /usr/local/bin/sratoolkit
