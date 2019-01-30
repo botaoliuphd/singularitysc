@@ -8,7 +8,7 @@ From: ubuntu:16.04
     Botao Liu added splicing packages
 
 %environment
-    PATH=$PATH:/bin:/sbin:/usr/local/bin/dolphin-bin:/usr/bin/bcl2fastq2-v2.17.1.14/bin:/usr/local/bin/dolphin-bin/tophat-2.0.14.Linux_x86_64:/usr/local/bin/julia/bin:/usr/local/bin/sratoolkit/bin
+    PATH=$PATH:/bin:/sbin:/usr/local/bin/dolphin-bin:/usr/bin/bcl2fastq2-v2.17.1.14/bin:/usr/local/bin/dolphin-bin/tophat-2.0.14.Linux_x86_64:/usr/local/bin/julia/bin:/usr/local/bin/sratoolkit/bin:/home/botaoliu/.cargo/bin
     export PATH
 
 %post
