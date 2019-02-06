@@ -170,3 +170,8 @@ From: ubuntu:16.04
     tar -xvzf sratoolkit.2.9.2-ubuntu64.tar.gz
     mkdir /usr/local/bin/sratoolkit
     mv sratoolkit.2.9.2-ubuntu64/* /usr/local/bin/sratoolkit
+
+    #################
+    ##### rMATS #####
+    #################
+    apt-get install libgsl0ldbl
