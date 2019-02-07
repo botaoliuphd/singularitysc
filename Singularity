@@ -174,4 +174,6 @@ From: ubuntu:16.04
     #################
     ##### rMATS #####
     #################
-    apt-get install libgsl0ldbl
+    cd /tmp
+    wget "http://mirrors.kernel.org/ubuntu/pool/main/g/gsl/libgsl0ldbl_1.16+dfsg-1ubuntu1_amd64.deb"
+    dpkg -i libgsl0ldbl_1.16+dfsg-1ubuntu1_amd64.deb
