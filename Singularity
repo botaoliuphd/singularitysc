@@ -8,7 +8,7 @@ From: ubuntu:16.04
     Botao Liu added splicing packages
 
 %environment
-    PATH=$PATH:/bin:/sbin:/usr/local/bin/dolphin-bin:/usr/bin/bcl2fastq2-v2.17.1.14/bin:/usr/local/bin/dolphin-bin/tophat-2.0.14.Linux_x86_64:/usr/local/bin/julia/bin:/usr/local/bin/sratoolkit/bin:/home/botaoliu/.cargo/bin
+    PATH=$PATH:/bin:/sbin:/usr/local/bin/dolphin-bin:/usr/bin/bcl2fastq2-v2.17.1.14/bin:/usr/local/bin/dolphin-bin/tophat-2.0.14.Linux_x86_64:/usr/local/bin/julia/bin:/usr/local/bin/sratoolkit/bin:/home/botaoliu/.cargo/bin:/usr/local/bin/matt
     export PATH
 
 %post
@@ -177,3 +177,13 @@ From: ubuntu:16.04
     cd /tmp
     wget "http://mirrors.kernel.org/ubuntu/pool/main/g/gsl/libgsl0ldbl_1.16+dfsg-1ubuntu1_amd64.deb"
     dpkg -i libgsl0ldbl_1.16+dfsg-1ubuntu1_amd64.deb
+
+    #################
+    ##### Matt  #####
+    #################
+    cd /usr/local/bin
+    mkdir matt
+    cd matt
+    wget matt.crg.eu/matt.tar.gz
+    tar -xvzf matt.tar.gz
+    ./INSTALL
