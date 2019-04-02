@@ -160,7 +160,7 @@ From: ubuntu:16.04
     pip3 install virtualenv
     pip3 install awscli
     pip3 install cython pysam numpy
-    pip3 install git+https://bitbucket.org/biociphers/majiq_stable.git#egg=majiq
+    pip3 install git+https://bitbucket.org/biociphers/majiq_stable.git
 
     #################
     ## sratoolkit ###
