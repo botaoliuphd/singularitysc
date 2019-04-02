@@ -195,3 +195,13 @@ From: ubuntu:16.04
     wget matt.crg.eu/matt.tar.gz
     tar -xvzf matt.tar.gz
     ./INSTALL
+
+    #################
+    ##### DARTS #####
+    #################
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
+    bash ~/miniconda.sh -b -p $HOME/miniconda
+    export PATH="$HOME/miniconda/bin:$PATH"
+    source $HOME/miniconda/bin/activate
+
+    conda install -c darts-comp-bio darts_dnn darts_bht
