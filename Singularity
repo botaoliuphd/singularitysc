@@ -154,13 +154,21 @@ From: ubuntu:16.04
 
 
     #################
-    ## majiq ##
+    ## majiq 2.0 ##
     #################
+    cd /tmp
+    wget "https://github.com/samtools/htslib/releases/download/1.9/htslib-1.9.tar.bz2"
+    tar -vxjf htslib-1.9.tar.bz2
+    cd htslib-1.9
+    make
+    make install
+
     apt-get install -y python3-dev python3-pip
-    pip3 install virtualenv
-    pip3 install awscli
-    pip3 install cython pysam numpy
-    pip3 install git+https://bitbucket.org/biociphers/majiq_stable.git
+    pip3 install virtualenv awscli
+    pip3 install pip
+    pip3 install wheel setuptools
+    pip3 install cython numpy GitPython
+    pip3 install git+https://bitbucket.org/biociphers/majiq_stable.git#egg=majiq
 
     #################
     ## sratoolkit ###
