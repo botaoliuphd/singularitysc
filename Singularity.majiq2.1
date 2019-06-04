@@ -3,12 +3,11 @@ From: ubuntu:16.04
 
 %labels
 
-    AUTHOR Onur Yukselen <onur.yukselen@umassmed.edu>
+    AUTHOR Alper Kucukural <alper.kucukural@umassmed.edu>
     Version v1.0
-    Botao Liu added splicing packages
 
 %environment
-    PATH=$PATH:/bin:/sbin:/usr/local/bin/dolphin-bin:/usr/bin/bcl2fastq2-v2.17.1.14/bin:/usr/local/bin/dolphin-bin/tophat-2.0.14.Linux_x86_64:/usr/local/bin/julia/bin:/usr/local/bin/sratoolkit/bin:/home/botaoliu/.cargo/bin:/usr/local/bin/matt
+    PATH=$PATH:/bin:/sbin:/usr/local/bin/dolphin-bin:/usr/bin/bcl2fastq2-v2.17.1.14/bin:/usr/local/bin/dolphin-bin/tophat-2.0.14.Linux_x86_64:/usr/local/bin/dolphin-bin/kraken:/usr/local/bin/dolphin-bin/samtools-1.2:/usr/bin/subread-1.6.4-Linux-x86_64/bin:/usr/local/bin/julia/bin:/usr/local/bin/sratoolkit/bin:/home/botaoliu/.cargo/bin:/usr/local/bin/matt
     export PATH
 
 %post
@@ -27,6 +26,30 @@ From: ubuntu:16.04
 	pip install pysam
 	pip install numpy scipy biopython
 
+  ###################
+  ## JAVA
+  ###################
+  apt-get update && \
+  apt-get install -y openjdk-8-jdk && \
+  apt-get install -y ant && \
+  apt-get clean;
+
+  # Fix certificate issues
+  apt-get update && \
+  apt-get install ca-certificates-java && \
+  apt-get clean && \
+  update-ca-certificates -f;
+
+    ###################
+    ## NEXTFLOW
+    ###################
+
+    export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+    mkdir /data && cd /data
+    curl -s https://get.nextflow.io | bash
+    mv /data/nextflow /usr/bin/.
+    mkdir -p /project /nl /share /.nextflow
+
     #################
     ## Dolphin-bin ##
     #################
@@ -37,9 +60,13 @@ From: ubuntu:16.04
     pip install -U boto
     pip install --upgrade pip
     pip install RSeQC
+    pip install multiqc
 
     cd /usr/local/bin/dolphin-bin/MACS2 && python setup.py install
     make -C /usr/local/bin/dolphin-bin/RSEM-1.2.29
+
+    ##kraken
+    chmod 777 /usr/local/bin/dolphin-bin/kraken/*
 
     ###tophat-2.0.14
     cd /tmp
@@ -47,12 +74,6 @@ From: ubuntu:16.04
     tar -xvzf tophat-2.0.14.Linux_x86_64.tar.gz
     rm -rf /usr/local/bin/dolphin-bin/tophat2_2.0.12
     mv tophat-2.0.14.Linux_x86_64/ /usr/local/bin/dolphin-bin/.
-
-    ###bowtie
-   # wget -N --no-check-certificate https://sourceforge.net/projects/bowtie-bio/files/bowtie2/2.1.0/bowtie2-2.1.0-linux-x86_64.zip
-   # unzip bowtie2-2.1.0-linux-x86_64.zip
-   # rm -rf /usr/local/bin/dolphin-bin/bowtie2*
-   # mv bowtie2-2.1.0/bowtie2* /usr/local/bin/dolphin-bin/.
 
     #################
     ## BCL2FASTQ v2.17.1.14
@@ -81,34 +102,42 @@ From: ubuntu:16.04
     #################
     ## UMI-TOOLS
     #################
-	pip install umi_tools
+	pip install umi_tools==0.5.5
 
 
-    #################
-    ## R ##
-    #################
-    NPROCS=`awk '/^processor/ {s+=1}; END{print s}' /proc/cpuinfo`
-    cd /tmp
-    wget http://security.ubuntu.com/ubuntu/pool/main/i/icu/libicu52_52.1-3ubuntu0.8_amd64.deb
-    dpkg -i libicu52_52.1-3ubuntu0.8_amd64.deb
-    wget https://cran.rstudio.com/src/base/R-3/R-3.5.1.tar.gz
-    tar xvf R-3.5.1.tar.gz
-    cd /tmp/R-3.5.1
-    apt-get update
-    apt-get install -y libblas3 libblas-dev liblapack-dev liblapack3 ghostscript  libicu52
-    apt-get install -y libgmp10 libgmp-dev
-    apt-get install -y fort77 aptitude
-    aptitude install -y xorg-dev
-    aptitude install -y libreadline-dev
-    apt install -y   libpcre3-dev liblzma-dev
-    apt-get update
-    apt-get install -y bioperl
-    apt-get update
+  #################
+  ## R ##
+  #################
+  NPROCS=`awk '/^processor/ {s+=1}; END{print s}' /proc/cpuinfo`
+  cd /tmp
+  wget http://security.ubuntu.com/ubuntu/pool/main/i/icu/libicu52_52.1-3ubuntu0.8_amd64.deb
+  dpkg -i libicu52_52.1-3ubuntu0.8_amd64.deb
+  wget https://cran.rstudio.com/src/base/R-3/R-3.5.1.tar.gz
+  tar xvf R-3.5.1.tar.gz
+  cd /tmp/R-3.5.1
+  apt-get update
+  apt-get install -y libblas3 libblas-dev liblapack-dev liblapack3 ghostscript  libicu52 \
+  libgmp10 libgmp-dev fort77 aptitude libpcre3-dev liblzma-dev libmariadb-client-lgpl-dev
+  aptitude install -y xorg-dev libreadline-dev
+  apt-get install -y bioperl
+  apt-get update
 
-    ./configure --enable-R-static-lib --with-blas --with-lapack --enable-R-shlib=yes
-    echo "Will use make with $NPROCS cores."
-    make -j${NPROCS}
-    make install
+  ./configure --enable-R-static-lib --with-blas --with-lapack --enable-R-shlib=yes
+  echo "Will use make with $NPROCS cores."
+  make -j${NPROCS}
+  make install
+
+  R --slave -e "source('https://bioconductor.org/biocLite.R'); biocLite()"
+  R --slave -e "install.packages(c('devtools', 'gplots', 'R.utils', 'RColorBrewer'), dependencies = TRUE, repos='https://cloud.r-project.org', Ncpus=${NPROCS})"
+  R --slave -e "BiocManager::install(c('XVector', 'GenomicRanges','ShortRead', 'scran'), version = '3.8')"
+  sed -i 's/, ignoreSelf=TRUE//g' /usr/local/bin/dolphin-bin/kraken/seqimp-13-274/bin/miR_table.R
+
+  #################
+  ##subread-featureCounts
+  ##################
+  cd /usr/bin/
+  wget https://galaxyweb.umassmed.edu/pub/software/subread-1.6.4-Linux-x86_64.tar.gz
+  tar zxvf subread-1.6.4-Linux-x86_64.tar.gz
 
     ## The following package are added by Botao ##
 
